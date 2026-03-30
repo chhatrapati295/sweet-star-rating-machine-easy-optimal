@@ -1,32 +1,42 @@
-function StarRating({
-    index,
-    clickCount,
-    hoverCount,
-    handleClick,
-    handleHover,
-  }: {
-    index: number;
-    clickCount: number;
-    hoverCount: number;
-    handleClick: (index: number) => void;
-    handleHover: (index: number) => void;
-  }) {
-    // Highlight if hovering or clicked
-    const isActive =
-      hoverCount >= 0 ? index <= hoverCount : index <= clickCount;
-  
-    return (
-      <div
-        className={`cursor-pointer text-2xl ${
-          isActive ? 'text-orange-300' : 'text-gray-400'
-        }`}
-        onMouseEnter={() => handleHover(index)}
-        onClick={() => handleClick(index)}
-      >
-        &#9733;
-      </div>
-    );
-  }
-  
-  export default StarRating;
-  
+import { useState } from "react";
+
+const StarRating = ({ maxRating = 5 }) => {
+  const [rating, setRating] = useState<number>(0);
+  const [hoverRating, setHoverRating] = useState<number>(0);
+
+  const handleStarClick = (id: number) => {
+    setRating(id);
+  };
+  const handleMouseEnter = (id: number) => {
+    setHoverRating(id);
+  };
+  const handleMouseLeave = () => {
+    setHoverRating(0);
+  };
+
+  return (
+    <div className="flex flex-col gap-4">
+      <h1 className="font-semibold">StarRating</h1>
+      <ul className="flex gap-2"  onMouseLeave={handleMouseLeave}>
+        {new Array(maxRating)?.fill(0)?.map((_, index) => {
+          return (
+            <li
+              onClick={() => handleStarClick(index+1)}
+              onMouseEnter={() => handleMouseEnter(index+1)}
+              key={index}
+              className={`text-5xl cursor-pointer ${
+                index + 1 <= (hoverRating || rating)
+                  ? "text-orange-400"
+                  : "text-gray-300"
+              }`}
+            >
+              ★
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
+
+export default StarRating;
